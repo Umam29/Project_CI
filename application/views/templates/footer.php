@@ -184,8 +184,14 @@
         } else {
           return false;
         }
-      })
-    })
+      });
+
+      $(document).on('input', '#payfee', function(){
+          var total=$('#total').val();
+          var payfee=$('#payfee').val();
+          $('#change').val(payfee-total);
+      });
+    })   
 
     $(document).on('keyup', '#qty', function() {
             let totalStok = parseInt($('#price').val()) * parseInt(this.value);

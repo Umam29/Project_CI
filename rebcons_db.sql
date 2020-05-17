@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 10 Bulan Mei 2020 pada 15.25
+-- Waktu pembuatan: 17 Bulan Mei 2020 pada 15.04
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.2
 
@@ -47,8 +47,9 @@ INSERT INTO `tbluser` (`id`, `name`, `user_name`, `image`, `password`, `role_id`
 (1, 'Tukang Test', 'testing', 'default.jpg', '$2y$10$Yoia4QMRwvPFeUxCqBJGLu8GO7ER56YNkzu2/5cSIlW5CT9S7bmja', 2, 1, 1578716827),
 (3, 'Umam', 'admin', 'IMG_0101_B3_E7.jpg', '$2y$10$qKfu95Fh4M3wiEdO8uc2neiIm9jf1OElA0G3G2hIOfgg9RBLFb3TW', 1, 1, 1578743224),
 (4, 'victoooor', 'victor', 'default.jpg', '$2y$10$4eViygFobwEa0OOe/YpVv.9RNh4Lmpfjj0lKWnLAyffn/fZX4Y15O', 2, 1, 1579696954),
-(5, 'Umam', 'umam', 'default.jpg', '$2y$10$mIkWOaGpmTE97ieJ2kdn/uM0I0vRqgm4SwVnzk70HEvfzq9JZ.Qeq', 2, 1, 1585640909),
-(6, 'Qomarul', 'qomar', 'default.jpg', '$2y$10$bXlTs4RDx8RVTqKEwz08EuNyMre/How204Q8gRlNUL1FpdIqxDPgG', 5, 0, 1587203486);
+(6, 'Qomarul', 'qomar', 'default.jpg', '$2y$10$bXlTs4RDx8RVTqKEwz08EuNyMre/How204Q8gRlNUL1FpdIqxDPgG', 5, 0, 1587203486),
+(7, 'Umam', 'umam', 'default.jpg', '$2y$10$FEqG4yCR5MCg55MsweAGWOA7a7lzOKsd/JF7QtCFYYeyXEak/7fmW', 2, 1, 1589713869),
+(8, 'kasir', 'kasir', 'default.jpg', '$2y$10$93GW1TYqOq/w3mAkWl6SOeEJJFKnSkpG9AyekntlGj6kLCyhSrW9C', 5, 1, 1589720541);
 
 -- --------------------------------------------------------
 
@@ -79,7 +80,13 @@ INSERT INTO `tbluseraccessmenu` (`id`, `role_id`, `menu_id`) VALUES
 (13, 5, 2),
 (14, 1, 16),
 (15, 1, 17),
-(16, 6, 2);
+(16, 6, 2),
+(17, 1, 18),
+(18, 2, 1),
+(19, 2, 15),
+(20, 2, 16),
+(21, 2, 17),
+(22, 5, 16);
 
 -- --------------------------------------------------------
 
@@ -162,7 +169,9 @@ INSERT INTO `tblusersubmenu` (`id`, `menu_id`, `title`, `url`, `icon`, `is_activ
 (15, 15, 'User Management', 'user', 'fas fa-users', 1),
 (16, 16, 'Sale', 'cashier', 'fas fa-cash-register', 1),
 (18, 17, 'Product', 'product', 'fas fa-utensils', 1),
-(19, 17, 'Product Category', 'product/productCategory', 'fas fa-th-list', 1);
+(19, 17, 'Product Category', 'product/productCategory', 'fas fa-th-list', 1),
+(20, 16, 'History', 'cashier/history', 'fas fa-history', 1),
+(21, 1, 'Report', 'admin/showReport', 'far fa-file-alt', 1);
 
 -- --------------------------------------------------------
 
@@ -243,7 +252,59 @@ CREATE TABLE `tbl_recipe` (
 
 INSERT INTO `tbl_recipe` (`id`, `product_id`, `stuff_id`, `measure`) VALUES
 (2, 3, 2, '0.15'),
-(3, 3, 4, '0.01');
+(3, 3, 4, '0.01'),
+(4, 2, 5, '1.00'),
+(5, 2, 6, '0.25');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tbl_sale`
+--
+
+CREATE TABLE `tbl_sale` (
+  `id` int(11) NOT NULL,
+  `struck_no` varchar(20) NOT NULL,
+  `date` datetime NOT NULL,
+  `total` decimal(17,2) NOT NULL,
+  `payfee` decimal(17,2) NOT NULL,
+  `cashier` int(11) NOT NULL,
+  `change` decimal(17,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tbl_sale`
+--
+
+INSERT INTO `tbl_sale` (`id`, `struck_no`, `date`, `total`, `payfee`, `cashier`, `change`) VALUES
+(5, '160520000001', '2020-05-16 13:17:00', '15000.00', '20000.00', 0, '5000.00'),
+(6, '170520000001', '2020-05-17 17:42:16', '20000.00', '20000.00', 0, '0.00'),
+(7, '170520000002', '2020-05-17 17:42:49', '0.00', '20000.00', 0, '0.00');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tbl_sale_detail`
+--
+
+CREATE TABLE `tbl_sale_detail` (
+  `id` int(11) NOT NULL,
+  `struck_no` varchar(20) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `price` decimal(17,2) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `total` decimal(17,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tbl_sale_detail`
+--
+
+INSERT INTO `tbl_sale_detail` (`id`, `struck_no`, `product_id`, `product_name`, `price`, `qty`, `total`) VALUES
+(1, '160520000001', 3, 'Fried Rice', '15000.00', 1, '15000.00'),
+(2, '170520000001', 3, 'Fried Rice', '15000.00', 1, '15000.00'),
+(3, '170520000001', 2, 'Ice Tea', '5000.00', 1, '5000.00');
 
 -- --------------------------------------------------------
 
@@ -357,8 +418,10 @@ CREATE TABLE `tbl_trx_stuff` (
 --
 
 INSERT INTO `tbl_trx_stuff` (`id`, `stuff_code`, `name`, `stock`, `price`, `unit_id`, `category_id`) VALUES
-(2, 'S001', 'Beras', '15.00', '12500.00', 1, 1),
-(4, 'S002', 'Bawang Merah', '5.00', '5000.00', 1, 4);
+(2, 'S001', 'Beras', '14.25', '12500.00', 1, 1),
+(4, 'S002', 'Bawang Merah', '5.45', '5000.00', 1, 4),
+(5, 'S003', 'Teh', '0.50', '2000.00', 3, 1),
+(6, 'S004', 'Es Batu', '2.50', '5000.00', 3, 1);
 
 --
 -- Indexes for dumped tables
@@ -419,6 +482,18 @@ ALTER TABLE `tbl_recipe`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeks untuk tabel `tbl_sale`
+--
+ALTER TABLE `tbl_sale`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `tbl_sale_detail`
+--
+ALTER TABLE `tbl_sale_detail`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeks untuk tabel `tbl_satuan`
 --
 ALTER TABLE `tbl_satuan`
@@ -457,19 +532,19 @@ ALTER TABLE `tbl_trx_stuff`
 -- AUTO_INCREMENT untuk tabel `tbluser`
 --
 ALTER TABLE `tbluser`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbluseraccessmenu`
 --
 ALTER TABLE `tbluseraccessmenu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT untuk tabel `tblusermenu`
 --
 ALTER TABLE `tblusermenu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbluserrole`
@@ -481,7 +556,7 @@ ALTER TABLE `tbluserrole`
 -- AUTO_INCREMENT untuk tabel `tblusersubmenu`
 --
 ALTER TABLE `tblusersubmenu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_category`
@@ -505,6 +580,18 @@ ALTER TABLE `tbl_product_category`
 -- AUTO_INCREMENT untuk tabel `tbl_recipe`
 --
 ALTER TABLE `tbl_recipe`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT untuk tabel `tbl_sale`
+--
+ALTER TABLE `tbl_sale`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT untuk tabel `tbl_sale_detail`
+--
+ALTER TABLE `tbl_sale_detail`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
@@ -535,7 +622,7 @@ ALTER TABLE `tbl_trx_purchase`
 -- AUTO_INCREMENT untuk tabel `tbl_trx_stuff`
 --
 ALTER TABLE `tbl_trx_stuff`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

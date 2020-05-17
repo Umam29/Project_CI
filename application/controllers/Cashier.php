@@ -7,15 +7,20 @@ class Cashier extends CI_Controller
     {
         parent::__construct();
         is_logged_in();
+        $this->load->library('cart');
+        $this->load->model('Recipe_model', 'recipe');
+        $this->load->model('Stuff_model', 'stuff');
+        $this->load->model('Sale_model', 'sale');
+        $this->load->model('Product_model', 'product');
     }
 
     public function index()
     {
         $data['title'] = 'Sale';
         $data['user'] = $this->db->get_where('tblUser', ['user_name' => $this->session->userdata('username')])->row_array();
-        $this->load->model('Product_model', 'product');
 
         $data['product'] = $this->product->getAllProduct();
+        $data['struck_no'] = $this->sale->getStruckNo();
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
@@ -26,15 +31,38 @@ class Cashier extends CI_Controller
 
     public function addCart()
     {
-        $this->load->library('cart');
-        $data = array(
-            "id" => $_POST["id"],
-            "name" => $_POST["product_name"],
-            "price" => $_POST["price"],
-            "qty" => $_POST["qty"]
-        );
+       
+        $product_id = $_POST["id"];
+        $qty = $_POST["qty"];
 
-        $this->cart->insert($data);
+        $recipe = $this->recipe->getAllRecipe($product_id);
+
+        $i = 0;
+
+        foreach ($recipe as $res) {
+            $stock_stuff = $res['s_stock'];
+            $measure = $qty * $res['measure'];
+
+            if ($measure > $stock_stuff) {
+                $i++;
+                break;
+            } else {
+                $this->stuff->editStuff($res['stuff_id'], ['stock' => ($stock_stuff - $measure)]);
+            }
+        }
+
+        if ($i > 0) {
+            echo '<div class="alert alert-danger" role="alert">Limited Stock</div>';
+        } else {    
+            $data = array(
+                "id" => $product_id,
+                "name" => $_POST["product_name"],
+                "price" => $_POST["price"],
+                "qty" => $qty
+            );
+
+            $this->cart->insert($data);
+        }
         echo $this->showCart();
     }
 
@@ -45,14 +73,97 @@ class Cashier extends CI_Controller
 
     public function removeCart()
     {
-        $this->load->library('cart');
+       
         $row_id = $_POST["row_id"];
+        $cart = $this->cart->get_item($row_id);
+
+        $recipe = $this->recipe->getAllRecipe($cart['id']);
+    
+        $qty = $cart['qty'];
+
+        foreach ($recipe as $value) {
+            $stock_stuff = $value['s_stock'];
+            $measure = $qty * $value['measure'];
+
+            $this->stuff->editStuff($value['stuff_id'], ['stock' => ($stock_stuff + $measure)]);
+        }
+
         $data = array(
             'rowid' => $row_id,
             'qty' => 0
         );
         $this->cart->update($data);
         echo $this->showCart();
+    }
+
+    public function addSale()
+    {
+        $struck_no = $this->sale->getStruckNo();
+        date_default_timezone_set('Asia/Jakarta');
+        $date = date('Y-m-d H:i:s');
+        $total = $this->cart->total();
+        $payfee = $this->input->post('payfee');
+        $change = $this->input->post('change');
+        $user = $this->db->get_where('tblUser', ['user_name' => $this->session->userdata('username')])->row_array();
+        $cashier = $user['name'];
+        $cart = $this->cart->contents();
+
+        $data_sale = [
+            'struck_no' => $struck_no,
+            'date' => $date,
+            'total' => $total,
+            'payfee' => $payfee,
+            'change' => $change,
+            'cashier' => $cashier
+        ];
+
+        $this->sale->addSale($data_sale);
+
+        foreach ($cart as $item) {
+            $data_sale_detail = [
+                'struck_no' => $struck_no,
+                'product_id' => $item['id'],
+                'product_name' => $item['name'],
+                'price' => $item['price'],
+                'qty' => $item['qty'],
+                'total' => $item['subtotal']
+            ];
+
+            $this->sale->addSaleDetail($data_sale_detail);
+        }
+
+        $disp = [
+            'struck_no' => $struck_no,
+            'cart' => $cart,
+            'total' => $total,
+            'payfee' => $payfee,
+            'change' => $change,
+            'date' => $date,
+            'cashier' => $cashier
+        ];
+
+        $this->printBill($disp);
+        $this->cart->destroy();
+        redirect('cashier');
+    }
+
+    public function history()
+    {
+        $data['title'] = 'History';
+        $data['user'] = $this->db->get_where('tblUser', ['user_name' => $this->session->userdata('username')])->row_array();
+        
+        $data['sales'] = $this->sale->getSale();
+        
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('cashier/history', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function printBill(array $data)
+    {
+        $this->load->view('cashier/print', $data);
     }
 
     public function showCart()
@@ -98,6 +209,26 @@ class Cashier extends CI_Controller
                     </tr>
                 </tbody>
             </table>
+            <form action="'. base_url() .'cashier/addSale" method="post" target="_blank">
+            <table>
+                <tr>
+                    <td style="width:760px;" rowspan="2"><button type="submit" class="btn btn-info btn-lg"> Pay</button></td>
+                    <th style="width:140px;">Total to Pay(Rp)</th>
+                    <th style="text-align:right;width:200px;"><input type="text" name="total2" id="total2" value="'. $this->cart->total() .'" class="form-control input-sm" style="text-align:right;margin-bottom:5px;" readonly></th>
+                    <input type="hidden" id="total" name="total" value="'. $this->cart->total() .'" class="form-control input-sm" style="text-align:right;margin-bottom:5px;" readonly>
+                </tr>
+                <tr>
+                    <th>Payfee(Rp)</th>
+                    <th style="text-align:right;"><input type="text" id="payfee" name="payfee" class="payfee form-control input-sm" style="text-align:right;margin-bottom:5px;" required></th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <th>Change(Rp)</th>
+                    <th style="text-align:right;"><input type="text" id="change" name="change" class="form-control input-sm" style="text-align:right;margin-bottom:5px;" required></th>
+                </tr>
+
+            </table>
+            </form>
         </div>
         ';
 
@@ -120,6 +251,26 @@ class Cashier extends CI_Controller
                         </tr>
                     </tbody>
                 </table>
+                <form action="'. base_url() .'cashier/addSale" method="post" target="_blank">
+                <table>
+                <tr>
+                    <td style="width:760px;" rowspan="2"><button type="submit" class="btn btn-info btn-lg"> Pay</button></td>
+                    <th style="width:140px;">Total to Pay(Rp)</th>
+                    <th style="text-align:right;width:200px;"><input type="text" name="total2" value="'. 0 .'" class="form-control input-sm" style="text-align:right;margin-bottom:5px;" readonly></th>
+                    <input type="hidden" id="total" name="total" value="'. 0 .'" class="form-control input-sm" style="text-align:right;margin-bottom:5px;" readonly>
+                </tr>
+                <tr>
+                    <th>Payfee(Rp)</th>
+                    <th style="text-align:right;"><input type="text" id="payfee" name="payfee" class="payfee form-control input-sm" style="text-align:right;margin-bottom:5px;" required></th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <th>Change(Rp)</th>
+                    <th style="text-align:right;"><input type="text" id="change" name="change" class="form-control input-sm" style="text-align:right;margin-bottom:5px;" required></th>
+                </tr>
+
+            </table>
+            </form>
             </div>
             ';
         }

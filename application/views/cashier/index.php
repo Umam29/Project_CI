@@ -11,6 +11,15 @@
         <a href="<?= base_url(); ?>transaction/historyStockIn"><i class="fas fa-arrow-left"></i> Back</a>
     </div> -->
         <div class="card">
+            <div class="card-header">
+            <div class="col-sm-6 d-flex text-right bill_no">
+                <div>
+                    <div class="mb-0">
+                        <b class="mr-2">Bill No</b> <span id="bill_no"><?= $struck_no; ?></span>
+                    </div>
+                </div>
+            </div>
+            </div>
             <div class="card-body">
                 <div class="col-md-4">
                         <div class="form-group">     
@@ -35,9 +44,10 @@
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary add_cart" id="add_cart">Add</button>
-                            <button type="submit" class="btn btn-success">Pay</button>
                         </div>
+                        
                 </div>
+                
                 <div id="cart_details">
                 </div>
             </div>

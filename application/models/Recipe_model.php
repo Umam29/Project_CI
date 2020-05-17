@@ -5,7 +5,7 @@ class Recipe_model extends CI_model
 {
     public function getAllRecipe($id)
     {
-        $this->db->select('tbl_recipe.*, tbl_product.name as p_name, tbl_trx_stuff.name as s_name, tbl_satuan.nama_satuan');
+        $this->db->select('tbl_recipe.*, tbl_product.name as p_name, tbl_trx_stuff.name as s_name, tbl_trx_stuff.stock as s_stock, tbl_satuan.nama_satuan');
         $this->db->from('tbl_recipe');
         $this->db->join('tbl_product', 'tbl_recipe.product_id = tbl_product.id');
         $this->db->join('tbl_trx_stuff', 'tbl_recipe.stuff_id = tbl_trx_stuff.id');

@@ -41,4 +41,12 @@ class Product_model extends CI_model
     {
         return $this->db->get_where('tbl_product', ['id' => $id])->result_array();
     }
+
+    public function getByIdRow($id)
+    {
+        $this->db->select('name');
+        $this->db->where('id', $id);
+        $this->db->from('tbl_product');
+        return $this->db->get()->row();
+    }
 }
