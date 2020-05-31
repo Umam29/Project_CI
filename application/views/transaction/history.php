@@ -8,7 +8,7 @@
 
   <div class="card shadow mb-4">
     <div class="card-header">
-      <a href="<?= base_url(); ?>transaction/StockIn"><i class="fas fa-plus"></i> Add</a>
+      <a href="<?= base_url(); ?>transaction/StockIn" class="btn btn-primary"><i class="fas fa-plus"></i> Add</a>
     </div>
       
       <div class="card-body">  

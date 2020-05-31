@@ -16,7 +16,7 @@
           <tr>
             <th scope="col">#</th>
               <th scope="col">Menu</th>
-              <th scope="col">Access</th>
+              <!-- <th scope="col">Access</th> -->
           </tr>
         </thead>
         <tbody>
@@ -25,12 +25,12 @@
             <?php foreach ($menu as $m) : ?> 
               <th scope="row"><?= $i;?></th>
               <td><?= $m['menu']; ?></td>
-              <td>
+              <!-- <td>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" <?= check_access($role['id'], $m['id']); ?>
                     data-role="<?= $role['id']; ?>" data-menu="<?= $m['id']; ?>">
                 </div>
-              </td>
+              </td> -->
           </tr>
           <?php $i++; ?>
           <?php endforeach; ?>

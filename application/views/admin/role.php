@@ -12,7 +12,7 @@
 
       <?= $this->session->flashdata('message');?>
       
-      <a href="" class="btn btn-primary mb-3" data-toggle="modal" data-target="#newRoleModal">Add New Role</a>
+      <!-- <a href="" class="btn btn-primary mb-3" data-toggle="modal" data-target="#newRoleModal">Add New Role</a> -->
 
       <table class="table table-hover">
         <thead>
@@ -30,9 +30,9 @@
               <td><?= $r['role_name']; ?></td>
               <td>
                 <a href="<?= base_url(); ?>admin/roleaccess/<?= $r['id'];?>" class="badge badge-warning">access</a>
-                <a href="" class="badge badge-success" data-toggle="modal" data-target="#modal_edit<?php echo $r['id'];?>">edit</a>
+                <!-- <a href="" class="badge badge-success" data-toggle="modal" data-target="#modal_edit<?php echo $r['id'];?>">edit</a> -->
                 <!-- Menuju Detail <a href="<?= base_url(); ?>menu/detail/<?= $m['id'];?>" class="badge badge-success">edit</a>-->
-                <a href="<?= base_url(); ?>admin/deleteRole/<?= $r['id'];?>" class="badge badge-danger" onclick="return confirm('Are you sure?');">delete</a>
+                <!-- <a href="<?= base_url(); ?>admin/deleteRole/<?= $r['id'];?>" class="badge badge-danger" onclick="return confirm('Are you sure?');">delete</a> -->
               </td>
           </tr>
           <?php $i++; ?>
@@ -54,7 +54,7 @@
 <!-- Button trigger modal -->
 
 <!-- Modal Add Menu -->
-<div class="modal fade" id="newRoleModal" tabindex="-1" role="dialog" aria-labelledby="newRoleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="newRoleModal" tabindex="-1" role="dialog" aria-labelledby="newRoleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -76,10 +76,10 @@
       </form>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Modal Edit Menu -->
-<?php foreach ($role as $r) : ?> 
+<!-- <?php foreach ($role as $r) : ?> 
 <div class="modal fade" id="modal_edit<?php echo $r['id'];?>" tabindex="-1" role="dialog" aria-labelledby="editRoleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -103,5 +103,5 @@
     </div>
   </div>
 </div>
-<?php endforeach; ?>
+<?php endforeach; ?> -->
 

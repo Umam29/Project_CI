@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 17 Bulan Mei 2020 pada 15.04
+-- Waktu pembuatan: 31 Bulan Mei 2020 pada 08.26
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.2
 
@@ -32,7 +32,7 @@ CREATE TABLE `tbluser` (
   `id` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
   `user_name` varchar(128) NOT NULL,
-  `image` varchar(128) NOT NULL,
+  `image` varchar(128) NOT NULL DEFAULT 'default.jpg',
   `password` varchar(256) NOT NULL,
   `role_id` int(11) NOT NULL,
   `is_active` int(1) NOT NULL,
@@ -130,9 +130,8 @@ CREATE TABLE `tbluserrole` (
 
 INSERT INTO `tbluserrole` (`id`, `role_name`) VALUES
 (1, 'Administrator'),
-(2, 'Owner'),
-(5, 'Cashier'),
-(6, 'Staff Gudang');
+(2, 'Supervisor'),
+(5, 'Cashier');
 
 -- --------------------------------------------------------
 
@@ -279,7 +278,9 @@ CREATE TABLE `tbl_sale` (
 INSERT INTO `tbl_sale` (`id`, `struck_no`, `date`, `total`, `payfee`, `cashier`, `change`) VALUES
 (5, '160520000001', '2020-05-16 13:17:00', '15000.00', '20000.00', 0, '5000.00'),
 (6, '170520000001', '2020-05-17 17:42:16', '20000.00', '20000.00', 0, '0.00'),
-(7, '170520000002', '2020-05-17 17:42:49', '0.00', '20000.00', 0, '0.00');
+(7, '170520000002', '2020-05-17 17:42:49', '0.00', '20000.00', 0, '0.00'),
+(8, '290520000001', '2020-05-29 13:17:11', '30000.00', '50000.00', 0, '20000.00'),
+(9, '290520000002', '2020-05-29 13:18:24', '15000.00', '20000.00', 0, '5000.00');
 
 -- --------------------------------------------------------
 
@@ -304,7 +305,9 @@ CREATE TABLE `tbl_sale_detail` (
 INSERT INTO `tbl_sale_detail` (`id`, `struck_no`, `product_id`, `product_name`, `price`, `qty`, `total`) VALUES
 (1, '160520000001', 3, 'Fried Rice', '15000.00', 1, '15000.00'),
 (2, '170520000001', 3, 'Fried Rice', '15000.00', 1, '15000.00'),
-(3, '170520000001', 2, 'Ice Tea', '5000.00', 1, '5000.00');
+(3, '170520000001', 2, 'Ice Tea', '5000.00', 1, '5000.00'),
+(4, '290520000001', 3, 'Fried Rice', '15000.00', 2, '30000.00'),
+(5, '290520000002', 3, 'Fried Rice', '15000.00', 1, '15000.00');
 
 -- --------------------------------------------------------
 
@@ -418,8 +421,8 @@ CREATE TABLE `tbl_trx_stuff` (
 --
 
 INSERT INTO `tbl_trx_stuff` (`id`, `stuff_code`, `name`, `stock`, `price`, `unit_id`, `category_id`) VALUES
-(2, 'S001', 'Beras', '14.25', '12500.00', 1, 1),
-(4, 'S002', 'Bawang Merah', '5.45', '5000.00', 1, 4),
+(2, 'S001', 'Beras', '13.80', '12500.00', 1, 1),
+(4, 'S002', 'Bawang Merah', '5.42', '5000.00', 1, 4),
 (5, 'S003', 'Teh', '0.50', '2000.00', 3, 1),
 (6, 'S004', 'Es Batu', '2.50', '5000.00', 3, 1);
 
@@ -586,13 +589,13 @@ ALTER TABLE `tbl_recipe`
 -- AUTO_INCREMENT untuk tabel `tbl_sale`
 --
 ALTER TABLE `tbl_sale`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_sale_detail`
 --
 ALTER TABLE `tbl_sale_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_satuan`

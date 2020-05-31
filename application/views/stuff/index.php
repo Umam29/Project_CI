@@ -8,7 +8,7 @@
 
   <div class="card shadow mb-4">
     <div class="card-header">
-      <a href="" data-toggle="modal" data-target="#newStuff"><i class="fas fa-plus"></i> Add</a>
+      <a href="" class="btn btn-primary" data-toggle="modal" data-target="#newStuff"><i class="fas fa-plus"></i> Add</a>
     </div>
       
       <div class="card-body">  

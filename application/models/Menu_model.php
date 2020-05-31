@@ -56,4 +56,14 @@ class Menu_model extends CI_model
         return $this->db->get('tblusermenu')->result_array();
     }
 
+    public function getMenuByRoleId($role_id)
+    {
+        $this->db->select('tbluseraccessmenu.*, tblusermenu.menu');
+        $this->db->from('tbluseraccessmenu');
+        $this->db->join('tblusermenu','tbluseraccessmenu.menu_id = tblusermenu.id');
+        $this->db->where('tbluseraccessmenu.menu_id !=', 1);
+        $this->db->where('tbluseraccessmenu.role_id', $role_id);
+        return $this->db->get()->result_array();
+    }
+
 }

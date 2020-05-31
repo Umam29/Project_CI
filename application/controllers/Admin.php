@@ -99,7 +99,7 @@ class Admin extends CI_Controller
         $this->load->model('Menu_model','menu');
 
         $data['role'] = $this->role->getRoleByID($id);
-        $data['menu'] = $this->menu->getAllMenu();
+        $data['menu'] = $this->menu->getMenuByRoleId($id);
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);

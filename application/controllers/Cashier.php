@@ -108,43 +108,47 @@ class Cashier extends CI_Controller
         $cashier = $user['name'];
         $cart = $this->cart->contents();
 
-        $data_sale = [
-            'struck_no' => $struck_no,
-            'date' => $date,
-            'total' => $total,
-            'payfee' => $payfee,
-            'change' => $change,
-            'cashier' => $cashier
-        ];
-
-        $this->sale->addSale($data_sale);
-
-        foreach ($cart as $item) {
-            $data_sale_detail = [
+        if($payfee < $total) {
+            $this->session->set_flashdata('message','<div class="alert alert-danger" role="alert">Payfee must be more than Total to Pay!!</div>');
+            redirect('cashier');
+        } else {
+            $data_sale = [
                 'struck_no' => $struck_no,
-                'product_id' => $item['id'],
-                'product_name' => $item['name'],
-                'price' => $item['price'],
-                'qty' => $item['qty'],
-                'total' => $item['subtotal']
+                'date' => $date,
+                'total' => $total,
+                'payfee' => $payfee,
+                'change' => $change,
+                'cashier' => $cashier
             ];
-
-            $this->sale->addSaleDetail($data_sale_detail);
+    
+            $this->sale->addSale($data_sale);
+    
+            foreach ($cart as $item) {
+                $data_sale_detail = [
+                    'struck_no' => $struck_no,
+                    'product_id' => $item['id'],
+                    'product_name' => $item['name'],
+                    'price' => $item['price'],
+                    'qty' => $item['qty'],
+                    'total' => $item['subtotal']
+                ];
+    
+                $this->sale->addSaleDetail($data_sale_detail);
+            }
+    
+            $disp = [
+                'struck_no' => $struck_no,
+                'cart' => $cart,
+                'total' => $total,
+                'payfee' => $payfee,
+                'change' => $change,
+                'date' => $date,
+                'cashier' => $cashier
+            ];
+    
+            $this->printBill($disp);
+            $this->cart->destroy();
         }
-
-        $disp = [
-            'struck_no' => $struck_no,
-            'cart' => $cart,
-            'total' => $total,
-            'payfee' => $payfee,
-            'change' => $change,
-            'date' => $date,
-            'cashier' => $cashier
-        ];
-
-        $this->printBill($disp);
-        $this->cart->destroy();
-        redirect('cashier');
     }
 
     public function history()

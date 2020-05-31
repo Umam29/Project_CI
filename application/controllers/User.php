@@ -42,7 +42,6 @@ class User extends CI_Controller
             $data = [
                 'name' => $this->input->post('name'),
                 'user_name' => $this->input->post('username'),
-                'image' => 'default.jpg',
                 'password' => password_hash('000000', PASSWORD_DEFAULT),
                 'role_id' => $this->input->post('role'),
                 'is_active' => $is_active_val,
